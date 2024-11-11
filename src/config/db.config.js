@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv/config";
 
-export const PORT = process.env.PORT || 8888;
-export const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/INSTA_DB";
-export const MAIL_FROM = process.env.MAIL_FROM || "example@gmail.com";
-export const MAIL_PASS = process.env.MAIL_PASS || "app paswword";
-export const SECRET_KEY = process.env.SECRET_KEY || "12345678"
+export const PORT = process.env.PORT;
+export const MONGO_URI = process.env.MONGO_URI;
+export const MAIL_FROM = process.env.MAIL_FROM;
+export const MAIL_PASS = process.env.MAIL_PASS;
+export const SECRET_KEY = process.env.SECRET_KEY;
 
 
 const dbConnect = async () => {

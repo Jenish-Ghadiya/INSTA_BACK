@@ -1,6 +1,7 @@
 import express from "express";
 import { PORT } from "./config/db.config.js";
 import dbConnect from "./config/db.config.js";
+import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
 
 const app = express();
