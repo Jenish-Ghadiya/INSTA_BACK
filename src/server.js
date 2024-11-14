@@ -9,7 +9,7 @@ const app = express();
 dbConnect();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://insta-front-a90iokxcn-jenish-s-projects.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
