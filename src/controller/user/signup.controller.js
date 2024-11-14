@@ -8,102 +8,9 @@ import bcrypt from "bcrypt";
 
 export const sendMail = async (email) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 1 * 60 * 1000); // Extended to 5 minutes
+    const otpExpires = new Date(Date.now() + 1 * 60 * 1000); 
 
-    const mailOptions = {
-        from: MAIL_FROM,
-        to: email,
-        subject: "OTP Verification",
-        html: `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Email Verification</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 0;
-                }
-                .container {
-                    max-width: 600px;
-                    margin: 20px auto;
-                    padding: 20px;
-                    background-color: #ffffff;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                }
-                .header {
-                    background-color: #ff0000;
-                    color: white;
-                    padding: 20px;
-                    text-align: center;
-                    border-radius: 8px 8px 0 0;
-                }
-                .content {
-                    padding: 20px;
-                    text-align: center;
-                }
-                .otp-code {
-                    font-size: 36px;
-                    font-weight: bold;
-                    color: #ff0000;
-                    letter-spacing: 5px;
-                    margin: 20px 0;
-                    padding: 10px;
-                    background-color: #ffe6e6;
-                    border-radius: 5px;
-                    display: inline-block;
-                }
-                .timer {
-                    color: #666;
-                    font-size: 14px;
-                    margin-bottom: 20px;
-                }
-                .note {
-                    font-size: 12px;
-                    color: #888;
-                    margin-top: 20px;
-                    font-style: italic;
-                }
-                .button {
-                    display: inline-block;
-                    padding: 10px 20px;
-                    background-color: #ff0000;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    font-weight: bold;
-                    margin-top: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h1>Email Verification</h1>
-                </div>
-                <div class="content">
-                    <p>Hello,</p>
-                    <p>Thank you for signing up! Please use the following One-Time Password (OTP) to verify your email address:</p>
-                    <div class="otp-code">${otp}</div>
-                    <div class="timer">This OTP will expire in 5 minutes</div>
-                    <p>If you didn't request this verification, please ignore this email.</p>
-                    <a href="https://vatu.vercel.app/verify-otp/${userId}?otp=${otp}" class="button">Verify Email</a>
-                    <div class="note">
-                        This is an automated message. Please do not reply to this email.
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-        `,
-    };
+    
 
     try {
         const existingUser = await UserSchema.findOne({ email });
@@ -118,6 +25,100 @@ export const sendMail = async (email) => {
         } else {
             user = await UserSchema.create({ email, otp, otpExpires });
         }
+        const mailOptions = {
+            from: MAIL_FROM,
+            to: email,
+            subject: "OTP Verification",
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Email Verification</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        color: #333;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 20px auto;
+                        padding: 20px;
+                        background-color: #ffffff;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                    }
+                    .header {
+                        background-color: #ff0000;
+                        color: white;
+                        padding: 20px;
+                        text-align: center;
+                        border-radius: 8px 8px 0 0;
+                    }
+                    .content {
+                        padding: 20px;
+                        text-align: center;
+                    }
+                    .otp-code {
+                        font-size: 36px;
+                        font-weight: bold;
+                        color: #ff0000;
+                        letter-spacing: 5px;
+                        margin: 20px 0;
+                        padding: 10px;
+                        background-color: #ffe6e6;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+                    .timer {
+                        color: #666;
+                        font-size: 14px;
+                        margin-bottom: 20px;
+                    }
+                    .note {
+                        font-size: 12px;
+                        color: #888;
+                        margin-top: 20px;
+                        font-style: italic;
+                    }
+                    .button {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        background-color: #ff0000;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                        margin-top: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Email Verification</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hello,</p>
+                        <p>Thank you for signing up! Please use the following One-Time Password (OTP) to verify your email address:</p>
+                        <div class="otp-code">${otp}</div>
+                        <div class="timer">This OTP will expire in 5 minutes</div>
+                        <p>If you didn't request this verification, please ignore this email.</p>
+                        <a href="https://vatu.vercel.app/verify-otp/${user._id}?otp=${otp}" class="button">Verify Email</a>
+                        <div class="note">
+                            This is an automated message. Please do not reply to this email.
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            `,
+        };
 
         await transporter.sendMail(mailOptions);
         return { success: true, otp, userId: user._id };
