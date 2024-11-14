@@ -9,7 +9,7 @@ const app = express();
 dbConnect();
 
 app.use(cors({
-  origin: "https://insta-back-kappa.vercel.app/",
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
