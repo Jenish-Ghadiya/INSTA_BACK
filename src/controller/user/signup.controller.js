@@ -94,7 +94,7 @@ export const sendMail = async (email) => {
                     <div class="otp-code">${otp}</div>
                     <div class="timer">This OTP will expire in 5 minutes</div>
                     <p>If you didn't request this verification, please ignore this email.</p>
-                    <a href="#" class="button">Verify Email</a>
+                    <a href="https://vatu.vercel.app/verify-otp/${userId}?otp=${otp}" class="button">Verify Email</a>
                     <div class="note">
                         This is an automated message. Please do not reply to this email.
                     </div>

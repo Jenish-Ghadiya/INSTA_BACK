@@ -9,7 +9,7 @@ import transporter from "../../utils/emailService.js";
 export const sendMail = async (email) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 1 * 60 * 1000); // Extended to 5 minutes
-
+    const findUser = await UserSchema.findOne({email})
     const mailOptions = {
         from: MAIL_FROM,
         to: email,
@@ -94,7 +94,7 @@ export const sendMail = async (email) => {
                     <div class="otp-code">${otp}</div>
                     <div class="timer">This OTP will expire in 1 minute</div>
                     <p>If you didn't request a password reset, please ignore this email or contact support if you have concerns.</p>
-                    <a href="#" class="button">Reset Password</a>
+                    <a href="https://vatu.vercel.app/forgot-password/${findUser._id}?otp=${otp}" class="button">Reset Password</a>
                     <div class="note">
                         This is an automated message. Please do not reply to this email.
                     </div>
