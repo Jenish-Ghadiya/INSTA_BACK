@@ -1,9 +1,9 @@
-import Joi from "joi";
 import validate from "../../middleware/validate.js";
 import UserSchema from "../../model/user.model.js";
-import transporter from "../../utils/emailService.js";
-import { MAIL_FROM } from "../../config/db.config.js";
 import bcrypt from "bcrypt";
+import { MAIL_FROM } from "../../config/db.config.js";
+import Joi from "joi";
+import transporter from "../../utils/emailService.js";
 
 
 export const sendMail = async (email) => {
@@ -20,7 +20,7 @@ export const sendMail = async (email) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Email Verification</title>
+            <title>Password Reset Verification</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -56,7 +56,7 @@ export const sendMail = async (email) => {
                     letter-spacing: 5px;
                     margin: 20px 0;
                     padding: 10px;
-                    background-color: #ffe6e6;
+                    background-color: #fce4e7;
                     border-radius: 5px;
                     display: inline-block;
                 }
@@ -86,15 +86,15 @@ export const sendMail = async (email) => {
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>Email Verification</h1>
+                    <h1>Password Reset Verification</h1>
                 </div>
                 <div class="content">
                     <p>Hello,</p>
-                    <p>Thank you for signing up! Please use the following One-Time Password (OTP) to verify your email address:</p>
+                    <p>We received a request to reset your password. Please use the following One-Time Password (OTP) to verify your identity:</p>
                     <div class="otp-code">${otp}</div>
-                    <div class="timer">This OTP will expire in 5 minutes</div>
-                    <p>If you didn't request this verification, please ignore this email.</p>
-                    <a href="#" class="button">Verify Email</a>
+                    <div class="timer">This OTP will expire in 1 minute</div>
+                    <p>If you didn't request a password reset, please ignore this email or contact support if you have concerns.</p>
+                    <a href="#" class="button">Reset Password</a>
                     <div class="note">
                         This is an automated message. Please do not reply to this email.
                     </div>
@@ -123,7 +123,10 @@ export const sendMail = async (email) => {
         return { success: true, otp, userId: user._id };
     } catch (error) {
         console.error("Error in sendMail:", error);
-        return { success: false, message: "Failed to send OTP. Please try again." };
+        return {
+            success: false,
+            message: "Failed to send OTP. Please try again.",
+        };
     }
 };
 
@@ -133,7 +136,7 @@ export default {
             email: Joi.string().email().required(),
         }),
     }),
-    verifyOtp: validate({
+    otpValidate: validate({
         body: Joi.object({
             otp: Joi.number().required(),
         }),
@@ -143,86 +146,59 @@ export default {
     }),
     validater: validate({
         body: Joi.object({
-            username: Joi.string().min(3).max(10).required(),
             password: Joi.string().min(4).max(10).required(),
-        }),
-        params: Joi.object({
-            id: Joi.string().required(),
+            confirmPassword: Joi.string().min(4).max(10).required(),
         }),
     }),
-    resendOtp: validate({
-        params: Joi.object({
-            id: Joi.string().required(),
-        }),
-    }),
-    sendMail: async (req, res) => {
+
+    sendOtpMail: async (req, res) => {
         const { email } = req.body;
         const existingUser = await UserSchema.findOne({ email });
-        if (existingUser && existingUser.isSignedUp) {
-            return res.status(400).json({ message: "User already signed up" });
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
         }
-        const result = await sendMail(email)
+        const result = await sendMail(email);
         if (result.success) {
-            res.status(200).json({message:"OTP sent to email",otp:result})
+            res.status(200).json({ message: "OTP sent to email", otp: result });
         } else {
-            res.status(500).json({message:"Internal server error"})
+            res.status(500).json({ message: result.message });
         }
     },
-    verifyOtp: async (req,res) => {
-        const {otp} = req.body;
-        const userId = req.params.id;
-        const user = await UserSchema.findById(userId);
-        if (!user) {
-            return res.status(400).json({message:"User not found"})
-        }
-        console.log(user.otp,otp);
-        if (user.otp !== otp) {
-            return res.status(400).json({message:"Invalid OTP"})
-        }
-        if (user.otpExpires < new Date()) {
-            return res.status(400).json({message:"OTP expired"})
-        }
-        await UserSchema.findByIdAndUpdate(userId,{otp:null,otpExpires:null})
-        res.status(200).json({message:"OTP verified"})
-    },
-    handler:async (req,res) => {
+
+    verifyOtp: async (req, res) => {
         try {
+            const { otp } = req.body;
             const userId = req.params.id;
+
             const user = await UserSchema.findById(userId);
             if (!user) {
-                return res.status(400).json({message:"User not found"})
-            }
-            const {username,password} = req.body;
-            const existingUser = await UserSchema.findOne({username});
-            if (existingUser) {
-                return res.status(400).json({message:"Username already exists"})
-            }
-            const hashedPassword = await bcrypt.hash(password,10);
-            await UserSchema.findByIdAndUpdate(userId,{username,password:hashedPassword,isSignedUp:true})
-            res.status(200).json({message:"User created successfully"})
-        } catch (error) {
-            res.status(500).json({message:error.message})
-        }
-    },
-    resendOtp: async (req, res) => {
-        try {
-            const userId = req.params.id;
-            const user = await UserSchema.findById(userId);
-            
-            if (!user) {
-                return res.status(400).json({ message: "User not found" });
-            }
-            
-            if (user.isSignedUp) {
-                return res.status(400).json({ message: "User already signed up" });
+                return res.status(404).json({ message: "User not found" });
             }
 
-            const result = await sendMail(user.email);
-            if (result.success) {
-                res.status(200).json({ message: "New OTP sent to email", otp: result });
-            } else {
-                res.status(500).json({ message: "Internal server error" });
+            if (user.otp !== otp) {
+                return res.status(400).json({ message: "Invalid OTP" });
             }
+
+            res.status(200).json({ message: "OTP verified" });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    handler: async (req, res) => {
+        try {
+            const { password , confirmPassword } = req.body;
+            const userId = req.params.id;
+
+            console.log(password,confirmPassword)
+            const user = await UserSchema.findById(userId);
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({message:"Password and confirm password does not match"})
+        }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await UserSchema.findByIdAndUpdate(userId, { password: hashedPassword });
+            res.status(200).json({ message: "Password updated successfully" });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

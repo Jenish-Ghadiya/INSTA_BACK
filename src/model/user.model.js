@@ -23,6 +23,10 @@ const UserModel = new mongoose.Schema(
         otpExpires: {
             type: Date,
             default: null
+        },
+        isSignedUp: {
+            type: Boolean,
+            default: false
         }
     },
     {

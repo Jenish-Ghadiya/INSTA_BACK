@@ -11,6 +11,7 @@ export const SECRET_KEY = process.env.SECRET_KEY;
 const dbConnect = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
+        console.log(process.env.MONGO_URI);
         console.log("db conect successfully");
     } catch (error) {
         console.log("dbConnect error", error.message);

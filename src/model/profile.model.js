@@ -2,25 +2,32 @@ import mongoose from "mongoose";
 
 const ProfileModel = new mongoose.Schema(
     {
-        name:{
-            type:String,
-            require:true
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         },
-        username:{
-            type:String,
-            require:true
+        name: {
+            type: String,
+            required: true
         },
-        bio:{
-            type:String,
-            default:""
+        username: {
+            type: String,
+            required: true
         },
-        profilepic:{
-            type:String,
-            default:""
+        bio: {
+            type: String,
+            default: ""
         },
-        pronouns:{
-            type:String,
-            default:""
+        profilepic: {
+            type: String,
+            default: ""
         },
+    },
+    {
+        timestamps: true
     }
-)
+);
+
+const ProfileSchema = mongoose.model("Profile", ProfileModel);
+export default ProfileSchema;
