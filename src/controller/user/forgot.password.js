@@ -150,6 +150,11 @@ export default {
             confirmPassword: Joi.string().min(4).max(10).required(),
         }),
     }),
+    resendOtp: validate({
+        params: Joi.object({
+            id: Joi.string().required(),
+        }),
+    }),
 
     sendOtpMail: async (req, res) => {
         const { email } = req.body;
@@ -203,4 +208,19 @@ export default {
             res.status(500).json({ message: error.message });
         }
     },
+    resendOtp: async (req, res) => {
+        const userId = req.params.id;
+
+        const user = await UserSchema.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const result = await sendMail(user.email);
+        if (result.success) {
+            res.status(200).json({ message: "OTP sent to email", otp: result.otp });
+        } else {
+            res.status(500).json({ message: result.message });
+        }
+    }
 };

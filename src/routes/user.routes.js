@@ -15,5 +15,6 @@ userRoutes.post('/login',loginController.validater,loginController.handler)
 userRoutes.post('/forgot-password/sendmail',forgotPassword.emailValidate,forgotPassword.sendOtpMail)
 userRoutes.post('/forgot-password/verifyotp/:id',forgotPassword.otpValidate,forgotPassword.verifyOtp)
 userRoutes.put('/forgot-password/updatepassword/:id',forgotPassword.validater,forgotPassword.handler)
+userRoutes.post('/forgot-password/resend-otp/:id',forgotPassword.resendOtp)
 
 export default userRoutes;
