@@ -5,15 +5,12 @@ const ProfileModel = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            required: true
         },
         name: {
             type: String,
-            required: true
         },
         username: {
             type: String,
-            required: true
         },
         bio: {
             type: String,
@@ -21,7 +18,7 @@ const ProfileModel = new mongoose.Schema(
         },
         profilepic: {
             type: String,
-            default: ""
+            default: "https://res.cloudinary.com/dovx2njqv/image/upload/v1731911050/none_lh5klu.webp"
         },
     },
     {

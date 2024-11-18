@@ -3,6 +3,7 @@ import { PORT } from "./config/db.config.js";
 import dbConnect from "./config/db.config.js";
 import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
+import profileRoutes from "./routes/profile.route.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/user/profile", profileRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

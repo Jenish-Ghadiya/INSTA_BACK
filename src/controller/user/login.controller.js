@@ -28,14 +28,14 @@ export default {
             if (!passwordmatch) {
                 return res.status(400).json({message:"password khoto chhe"})
             }
-
-            const token = jwt.sign({id:user._id},SECRET_KEY)
-            const profile = await ProfileSchema.findOne({userId:user._id})
+            const id = user._id.toString();
+            const token = jwt.sign({id:id},SECRET_KEY)
+            const profile = await ProfileSchema.findOne({userId:id})
 
             if (!profile) {
                 const splitEmail = user.email.split("@")[0]
                 await ProfileSchema.create({
-                    userId: user._id,
+                    userId: id,
                     username: user.username,
                     name: splitEmail
                 })

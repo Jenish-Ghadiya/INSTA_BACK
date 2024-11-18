@@ -6,7 +6,9 @@ export const MONGO_URI = process.env.MONGO_URI;
 export const MAIL_FROM = process.env.MAIL_FROM;
 export const MAIL_PASS = process.env.MAIL_PASS;
 export const SECRET_KEY = process.env.SECRET_KEY;
-
+export const CLOUDINARY_NAME = process.env.CLOUDINARY_NAME;
+export const CLOUDINARY_KEY = process.env.CLOUDINARY_KEY;
+export const CLOUDINARY_SECRET = process.env.CLOUDINARY_SECRET;
 
 const dbConnect = async () => {
     try {
