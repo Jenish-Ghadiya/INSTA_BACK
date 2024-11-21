@@ -95,6 +95,11 @@ export const sendMail = async (email) => {
                         border-radius: 5px;
                         font-weight: bold;
                         margin-top: 20px;
+                        color: #fff;
+                    }
+                    a{
+                        text-decoration: none;
+                        color: #fff;
                     }
                 </style>
             </head>
@@ -183,7 +188,7 @@ export default {
         if (user.otpExpires < new Date()) {
             return res.status(400).json({message:"OTP expired"})
         }
-        await UserSchema.findByIdAndUpdate(userId,{otp:null,otpExpires:null})
+        await UserSchema.findByIdAndUpdate(userId,{otp:null,otpExpires:null,isVerified:true})
         res.status(200).json({message:"OTP verified"})
     },
     handler:async (req,res) => {

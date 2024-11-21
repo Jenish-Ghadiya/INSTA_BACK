@@ -40,9 +40,15 @@ export default {
                     name: splitEmail
                 })
             }
+            await UserSchema.findByIdAndUpdate(id,{isLoggedIn:true})
             return res.status(200).json({success:true,message:"login successfully",token:token})
         } catch (error) {
             return res.status(500).json({success:false,message:error.message})
         }
-    }
+    },
+    logout: async (req, res) => {
+        const id = req.user.id;
+        await UserSchema.findByIdAndUpdate(id, { isLoggedIn: false });
+        return res.status(200).json({ success: true, message: "logout successfully" });
+    },
 };

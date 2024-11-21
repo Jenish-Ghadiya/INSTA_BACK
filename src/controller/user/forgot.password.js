@@ -75,11 +75,16 @@ export const sendMail = async (email) => {
                     display: inline-block;
                     padding: 10px 20px;
                     background-color: #ff0000;
-                    color: white;
                     text-decoration: none;
                     border-radius: 5px;
                     font-weight: bold;
                     margin-top: 20px;
+                    color: #fff;
+                    cursor: pointer;
+                }
+                a{
+                    text-decoration: none;
+                    color: #fff;
                 }
             </style>
         </head>

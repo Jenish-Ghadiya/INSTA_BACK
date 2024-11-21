@@ -27,6 +27,14 @@ const UserModel = new mongoose.Schema(
         isSignedUp: {
             type: Boolean,
             default: false
+        },
+        isVerified: {
+            type: Boolean,
+            default: false
+        },
+        isLoggedIn: {
+            type: Boolean,
+            default: false
         }
     },
     {
