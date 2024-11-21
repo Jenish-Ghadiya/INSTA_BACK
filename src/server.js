@@ -23,8 +23,6 @@ app.get("/", (req, res) => {
     res.json({ message: "Hello from server" });
 });
 
-
-
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/user/profile", profileRoutes);
 app.use("/api/v1/user/post", postRoutes);
